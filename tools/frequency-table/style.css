@@ -1,0 +1,88 @@
+/* Frequency Table Tool Styles */
+
+.table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+#frequency-table {
+    white-space: nowrap;
+}
+
+#frequency-table th,
+#frequency-table td {
+    text-align: center;
+    min-width: 80px;
+}
+
+#frequency-table th:first-child,
+#frequency-table td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    font-weight: bold;
+    min-width: 50px;
+}
+
+/* Light mode sticky column background */
+:root:not([data-theme="dark"]) #frequency-table th:first-child,
+:root:not([data-theme="dark"]) #frequency-table td:first-child {
+    background: var(--pico-background-color, #fff);
+}
+
+/* Dark mode sticky column background */
+[data-theme="dark"] #frequency-table th:first-child,
+[data-theme="dark"] #frequency-table td:first-child {
+    background: var(--pico-background-color, #13171f);
+}
+
+/* System preference dark mode */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) #frequency-table th:first-child,
+    :root:not([data-theme="light"]) #frequency-table td:first-child {
+        background: var(--pico-background-color, #13171f);
+    }
+}
+
+/* Clickable frequency cells */
+#frequency-table td:not(:first-child) {
+    cursor: pointer;
+    transition: background-color 0.15s ease, transform 0.1s ease;
+    user-select: none;
+}
+
+#frequency-table td:not(:first-child):hover {
+    background-color: var(--pico-primary-hover-background);
+    color: var(--pico-primary-inverse);
+}
+
+#frequency-table td:not(:first-child):active {
+    transform: scale(0.95);
+}
+
+/* Playing state */
+#frequency-table td.playing {
+    background-color: var(--pico-primary-background);
+    color: var(--pico-primary-inverse);
+    animation: pulse 0.5s ease-out;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Reference note highlight (A4 = 440 Hz) */
+#frequency-table td.reference {
+    outline: 2px solid var(--pico-primary);
+    outline-offset: -2px;
+}
+
+/* Sharp notes styling */
+#frequency-table tr.sharp-note td:first-child {
+    font-size: 0.9em;
+}

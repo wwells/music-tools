@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="auto">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Note Frequency Table - Music Tools</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="container">
+        <nav>
+            <ul>
+                <li><a href="../../"><strong>Music Tools</strong></a></li>
+            </ul>
+            <ul>
+                <li><a href="../../">Home</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <hgroup>
+            <h1>Note Frequency Table</h1>
+            <p>Interactive reference for musical note frequencies in Hertz (Hz). Click any cell to play the tone.</p>
+        </hgroup>
+
+        <p><small>Based on equal-tempered scale with <mark>A4 = 440 Hz</mark> as reference pitch.</small></p>
+
+        <figure>
+            <div class="table-wrapper">
+                <table role="grid" id="frequency-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Note</th>
+                            <th scope="col">0</th>
+                            <th scope="col">1</th>
+                            <th scope="col">2</th>
+                            <th scope="col">3</th>
+                            <th scope="col">4</th>
+                            <th scope="col">5</th>
+                            <th scope="col">6</th>
+                            <th scope="col">7</th>
+                            <th scope="col">8</th>
+                        </tr>
+                    </thead>
+                    <tbody id="frequency-tbody">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <figcaption>Values in Hertz (Hz). Top row shows octave numbers (0-8).</figcaption>
+        </figure>
+    </main>
+
+    <footer class="container">
+        <small><a href="../../">Back to Music Tools</a></small>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+/* Music Tools - Shared Styles */
+
+/* Auto dark/light mode based on system preference */
+:root {
+    color-scheme: light dark;
+}
+
+/* Page layout */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+body > main {
+    flex: 1;
+}
+
+body > footer {
+    padding: 2rem 0;
+    text-align: center;
+}
+
+/* Tool cards */
+.grid article {
+    display: flex;
+    flex-direction: column;
+}
+
+.grid article > footer {
+    margin-top: auto;
+}
+
+.coming-soon {
+    opacity: 0.7;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
