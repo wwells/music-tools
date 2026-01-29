@@ -8,24 +8,11 @@ A collection of interactive music theory tools, served as static web pages.
 
 ## Local Development
 
-Since this is a static site, you just need a simple HTTP server. Here are a few options:
+Since this is a static site, you just need a simple HTTP server.
 
-### Option 1: Python (usually pre-installed on Mac/Linux)
 
 ```bash
 python3 -m http.server 8000
-```
-
-### Option 2: Node.js
-
-```bash
-npx serve .
-```
-
-### Option 3: PHP (if installed)
-
-```bash
-php -S localhost:8000
 ```
 
 Then open [http://localhost:8000](http://localhost:8000) in your browser.
