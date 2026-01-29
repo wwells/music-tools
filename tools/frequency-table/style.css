@@ -22,24 +22,13 @@
     z-index: 1;
     font-weight: bold;
     min-width: 50px;
-}
-
-/* Light mode sticky column background */
-:root:not([data-theme="dark"]) #frequency-table th:first-child,
-:root:not([data-theme="dark"]) #frequency-table td:first-child {
     background: var(--pico-background-color, #fff);
 }
 
 /* Dark mode sticky column background */
-[data-theme="dark"] #frequency-table th:first-child,
-[data-theme="dark"] #frequency-table td:first-child {
-    background: var(--pico-background-color, #13171f);
-}
-
-/* System preference dark mode */
 @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) #frequency-table th:first-child,
-    :root:not([data-theme="light"]) #frequency-table td:first-child {
+    #frequency-table th:first-child,
+    #frequency-table td:first-child {
         background: var(--pico-background-color, #13171f);
     }
 }
