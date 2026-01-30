@@ -1,5 +1,18 @@
 /* Frequency Table Tool Styles */
 
+/* Audio enable prompt for mobile */
+.audio-prompt {
+    text-align: center;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: var(--pico-border-radius);
+    background: var(--pico-primary-background);
+}
+
+.audio-prompt button {
+    margin: 0;
+}
+
 .table-wrapper {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;

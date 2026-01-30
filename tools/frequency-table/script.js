@@ -14,9 +14,16 @@ const MAX_OCTAVE = 8;
 const A4_FREQUENCY = 440;
 const A4_MIDI = 69;
 
-// Audio context (created on first user interaction)
+// Audio state
 let audioContext = null;
-let audioUnlocked = false;
+let audioEnabled = false;
+
+/**
+ * Check if device is likely mobile/touch
+ */
+function isTouchDevice() {
+    return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+}
 
 /**
  * Calculate frequency for a given note and octave
@@ -42,93 +49,128 @@ function formatFrequency(freq) {
 }
 
 /**
- * Initialize or get the audio context
+ * Initialize and unlock the audio context
+ * Must be called from a user gesture on mobile
  */
-function getAudioContext() {
-    if (!audioContext) {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+async function initAudio() {
+    if (audioEnabled) return true;
+    
+    try {
+        // Create audio context
+        if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        
+        // Resume if suspended
+        if (audioContext.state === 'suspended') {
+            await audioContext.resume();
+        }
+        
+        // Play a silent buffer to fully unlock on iOS
+        const buffer = audioContext.createBuffer(1, 1, 22050);
+        const source = audioContext.createBufferSource();
+        source.buffer = buffer;
+        source.connect(audioContext.destination);
+        source.start(0);
+        
+        audioEnabled = true;
+        return true;
+    } catch (e) {
+        console.warn('Could not initialize audio:', e);
+        return false;
     }
-    return audioContext;
 }
 
 /**
- * Unlock audio for iOS and other mobile browsers
- * Must be called from a user gesture (touch/click)
+ * Handle enable audio button click
  */
-async function unlockAudio() {
-    if (audioUnlocked) return;
-    
-    const ctx = getAudioContext();
-    
-    // Resume if suspended
-    if (ctx.state === 'suspended') {
-        await ctx.resume();
+async function handleEnableAudio() {
+    const success = await initAudio();
+    if (success) {
+        // Hide the prompt
+        const prompt = document.getElementById('audio-prompt');
+        if (prompt) {
+            prompt.hidden = true;
+        }
+        // Play a test tone to confirm
+        await playTone(440, 0.2);
     }
-    
-    // iOS requires playing a buffer to fully unlock
-    const buffer = ctx.createBuffer(1, 1, 22050);
-    const source = ctx.createBufferSource();
-    source.buffer = buffer;
-    source.connect(ctx.destination);
-    source.start(0);
-    
-    audioUnlocked = true;
+}
+
+/**
+ * Show audio prompt on touch devices
+ */
+function setupAudioPrompt() {
+    if (isTouchDevice()) {
+        const prompt = document.getElementById('audio-prompt');
+        const btn = document.getElementById('enable-audio-btn');
+        if (prompt && btn) {
+            prompt.hidden = false;
+            btn.addEventListener('click', handleEnableAudio);
+        }
+    }
+    // On desktop, audio will be initialized on first click (no prompt needed)
 }
 
 /**
  * Play a tone at the given frequency
  */
 async function playTone(frequency, duration = 0.5) {
-    const ctx = getAudioContext();
+    // On mobile, require explicit audio enable first
+    if (!audioEnabled) {
+        // Try to enable audio (will work on desktop, may fail on mobile)
+        const success = await initAudio();
+        if (!success) {
+            return 500;
+        }
+    }
     
-    // Ensure audio is unlocked (for mobile)
-    await unlockAudio();
-    
-    // Create oscillator
-    const oscillator = ctx.createOscillator();
-    oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
-    
-    // Create gain node for envelope
-    const gainNode = ctx.createGain();
-    gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
-    
-    // Fade out to avoid clicks
-    const fadeStart = ctx.currentTime + duration * 0.7;
-    const fadeEnd = ctx.currentTime + duration;
-    gainNode.gain.setValueAtTime(0.3, fadeStart);
-    gainNode.gain.exponentialRampToValueAtTime(0.001, fadeEnd);
-    
-    // Connect nodes
-    oscillator.connect(gainNode);
-    gainNode.connect(ctx.destination);
-    
-    // Start and stop
-    oscillator.start(ctx.currentTime);
-    oscillator.stop(fadeEnd);
-    
-    return duration * 1000; // Return duration in ms for UI feedback
+    try {
+        // Create oscillator
+        const oscillator = audioContext.createOscillator();
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+        
+        // Create gain node for envelope
+        const gainNode = audioContext.createGain();
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        
+        // Fade out to avoid clicks
+        const fadeStart = audioContext.currentTime + duration * 0.7;
+        const fadeEnd = audioContext.currentTime + duration;
+        gainNode.gain.setValueAtTime(0.3, fadeStart);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, fadeEnd);
+        
+        // Connect nodes
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        // Start and stop
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(fadeEnd);
+        
+        return duration * 1000;
+    } catch (e) {
+        console.warn('Could not play tone:', e);
+        return 500;
+    }
 }
 
 /**
- * Handle cell click/touch - play tone and show visual feedback
+ * Handle cell click - play tone and show visual feedback
  */
-async function handleCellInteraction(event) {
-    // Prevent double-firing on touch devices
-    if (event.type === 'touchstart') {
-        event.preventDefault();
-    }
-    
+async function handleCellClick(event) {
     const cell = event.target;
     const frequency = parseFloat(cell.dataset.frequency);
     
     if (!frequency || isNaN(frequency)) return;
     
+    // Visual feedback immediately
+    cell.classList.add('playing');
+    
     // Play the tone
     const durationMs = await playTone(frequency);
     
-    // Visual feedback
-    cell.classList.add('playing');
     setTimeout(() => {
         cell.classList.remove('playing');
     }, durationMs);
@@ -174,9 +216,8 @@ function buildTable() {
                 cell.classList.add('reference');
             }
             
-            // Add click and touch handlers for mobile support
-            cell.addEventListener('click', handleCellInteraction);
-            cell.addEventListener('touchstart', handleCellInteraction, { passive: false });
+            // Add click handler (works on both desktop and mobile)
+            cell.addEventListener('click', handleCellClick);
             
             row.appendChild(cell);
         }
@@ -186,4 +227,7 @@ function buildTable() {
 }
 
 // Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', buildTable);
+document.addEventListener('DOMContentLoaded', () => {
+    buildTable();
+    setupAudioPrompt();
+});
