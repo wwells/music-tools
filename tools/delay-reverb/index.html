@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delay & Reverb Calculator - Music Tools</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="container">
+        <nav>
+            <ul>
+                <li><a href="../../"><strong>Music Tools</strong></a></li>
+            </ul>
+            <ul>
+                <li><a href="../../">Home</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <hgroup>
+            <h1>Delay & Reverb Calculator</h1>
+            <p>Calculate delay times and reverb settings synchronized to your song's tempo.</p>
+        </hgroup>
+
+        <div class="bpm-input-section">
+            <label for="bpm-input">
+                <strong>BPM (Beats Per Minute)</strong>
+            </label>
+            <input 
+                type="number" 
+                id="bpm-input" 
+                name="bpm" 
+                min="20" 
+                max="300" 
+                value="120"
+                aria-describedby="bpm-helper"
+            >
+            <small id="bpm-helper">Enter a value between 20 and 300 BPM</small>
+        </div>
+
+        <section>
+            <h2>Reverb Settings</h2>
+            <p><small>Recommended pre-delay and decay times for different room sizes. Pre-delay creates the initial gap before reverb, while decay fills the remaining time.</small></p>
+            
+            <figure>
+                <div class="table-wrapper">
+                    <table id="reverb-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Room Size</th>
+                                <th scope="col">Pre-Delay</th>
+                                <th scope="col">Decay Time</th>
+                                <th scope="col">Total Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reverb-tbody">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </figure>
+        </section>
+
+        <section>
+            <h2>Delay Times</h2>
+            <p><small>Delay lengths for different note values. Use Hz values for syncing LFOs to tempo.</small></p>
+            
+            <figure>
+                <div class="table-wrapper">
+                    <table id="delay-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Note Value</th>
+                                <th scope="col">Normal</th>
+                                <th scope="col">Dotted</th>
+                                <th scope="col">Triplet</th>
+                            </tr>
+                        </thead>
+                        <tbody id="delay-tbody">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </figure>
+        </section>
+    </main>
+
+    <footer class="container">
+        <small><a href="../../">Back to Music Tools</a></small>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

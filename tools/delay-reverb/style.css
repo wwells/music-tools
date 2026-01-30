@@ -1,0 +1,87 @@
+/* Delay & Reverb Calculator Styles */
+
+/* BPM Input Section */
+.bpm-input-section {
+    max-width: 300px;
+    margin-bottom: 2rem;
+}
+
+.bpm-input-section input {
+    font-size: 1.5rem;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Table wrapper for horizontal scroll on mobile */
+.table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Shared table styles */
+#reverb-table,
+#delay-table {
+    white-space: nowrap;
+}
+
+#reverb-table th,
+#reverb-table td,
+#delay-table th,
+#delay-table td {
+    text-align: center;
+    min-width: 120px;
+}
+
+/* First column (labels) - sticky on scroll */
+#reverb-table th:first-child,
+#reverb-table td:first-child,
+#delay-table th:first-child,
+#delay-table td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    text-align: left;
+    font-weight: bold;
+    min-width: 140px;
+    background: var(--pico-background-color, #fff);
+}
+
+/* Dark mode sticky column background */
+@media (prefers-color-scheme: dark) {
+    #reverb-table th:first-child,
+    #reverb-table td:first-child,
+    #delay-table th:first-child,
+    #delay-table td:first-child {
+        background: var(--pico-background-color, #13171f);
+    }
+}
+
+/* Value cells styling */
+.value-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.ms-value {
+    font-weight: 600;
+}
+
+.hz-value {
+    font-size: 0.85em;
+    opacity: 0.7;
+}
+
+/* Section spacing */
+section {
+    margin-bottom: 2rem;
+}
+
+section h2 {
+    margin-bottom: 0.5rem;
+}
+
+section > p {
+    margin-bottom: 1rem;
+}
