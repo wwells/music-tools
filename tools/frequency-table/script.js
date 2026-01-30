@@ -16,6 +16,7 @@ const A4_MIDI = 69;
 
 // Audio context (created on first user interaction)
 let audioContext = null;
+let audioUnlocked = false;
 
 /**
  * Calculate frequency for a given note and octave
@@ -47,18 +48,41 @@ function getAudioContext() {
     if (!audioContext) {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
     }
-    // Resume if suspended (browsers require user interaction)
-    if (audioContext.state === 'suspended') {
-        audioContext.resume();
-    }
     return audioContext;
+}
+
+/**
+ * Unlock audio for iOS and other mobile browsers
+ * Must be called from a user gesture (touch/click)
+ */
+async function unlockAudio() {
+    if (audioUnlocked) return;
+    
+    const ctx = getAudioContext();
+    
+    // Resume if suspended
+    if (ctx.state === 'suspended') {
+        await ctx.resume();
+    }
+    
+    // iOS requires playing a buffer to fully unlock
+    const buffer = ctx.createBuffer(1, 1, 22050);
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    source.connect(ctx.destination);
+    source.start(0);
+    
+    audioUnlocked = true;
 }
 
 /**
  * Play a tone at the given frequency
  */
-function playTone(frequency, duration = 0.5) {
+async function playTone(frequency, duration = 0.5) {
     const ctx = getAudioContext();
+    
+    // Ensure audio is unlocked (for mobile)
+    await unlockAudio();
     
     // Create oscillator
     const oscillator = ctx.createOscillator();
@@ -87,16 +111,21 @@ function playTone(frequency, duration = 0.5) {
 }
 
 /**
- * Handle cell click - play tone and show visual feedback
+ * Handle cell click/touch - play tone and show visual feedback
  */
-function handleCellClick(event) {
+async function handleCellInteraction(event) {
+    // Prevent double-firing on touch devices
+    if (event.type === 'touchstart') {
+        event.preventDefault();
+    }
+    
     const cell = event.target;
     const frequency = parseFloat(cell.dataset.frequency);
     
     if (!frequency || isNaN(frequency)) return;
     
     // Play the tone
-    const durationMs = playTone(frequency);
+    const durationMs = await playTone(frequency);
     
     // Visual feedback
     cell.classList.add('playing');
@@ -145,8 +174,9 @@ function buildTable() {
                 cell.classList.add('reference');
             }
             
-            // Add click handler
-            cell.addEventListener('click', handleCellClick);
+            // Add click and touch handlers for mobile support
+            cell.addEventListener('click', handleCellInteraction);
+            cell.addEventListener('touchstart', handleCellInteraction, { passive: false });
             
             row.appendChild(cell);
         }
