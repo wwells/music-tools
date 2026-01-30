@@ -50,28 +50,37 @@ function formatFrequency(freq) {
 
 /**
  * Initialize and unlock the audio context
- * Must be called from a user gesture on mobile
+ * Must be called synchronously from a user gesture on iOS
  */
-async function initAudio() {
-    if (audioEnabled) return true;
+function initAudio() {
+    if (audioEnabled && audioContext) return true;
     
     try {
-        // Create audio context
+        // Create audio context - must happen synchronously in gesture
         if (!audioContext) {
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            audioContext = new AudioContextClass();
         }
         
-        // Resume if suspended
+        // Resume returns a promise but we also need to start audio synchronously
         if (audioContext.state === 'suspended') {
-            await audioContext.resume();
+            audioContext.resume();
         }
         
-        // Play a silent buffer to fully unlock on iOS
-        const buffer = audioContext.createBuffer(1, 1, 22050);
-        const source = audioContext.createBufferSource();
-        source.buffer = buffer;
-        source.connect(audioContext.destination);
-        source.start(0);
+        // iOS requires actually producing sound to unlock - play a real tone
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        // Very short, quiet tone
+        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.1);
+        
+        oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.1);
         
         audioEnabled = true;
         return true;
@@ -84,16 +93,15 @@ async function initAudio() {
 /**
  * Handle enable audio button click
  */
-async function handleEnableAudio() {
-    const success = await initAudio();
+function handleEnableAudio() {
+    // Must be synchronous for iOS
+    const success = initAudio();
     if (success) {
         // Hide the prompt
         const prompt = document.getElementById('audio-prompt');
         if (prompt) {
             prompt.hidden = true;
         }
-        // Play a test tone to confirm
-        await playTone(440, 0.2);
     }
 }
 
@@ -115,11 +123,10 @@ function setupAudioPrompt() {
 /**
  * Play a tone at the given frequency
  */
-async function playTone(frequency, duration = 0.5) {
-    // On mobile, require explicit audio enable first
-    if (!audioEnabled) {
-        // Try to enable audio (will work on desktop, may fail on mobile)
-        const success = await initAudio();
+function playTone(frequency, duration = 0.5) {
+    // Initialize audio if needed (will work on desktop click, mobile needs button first)
+    if (!audioEnabled || !audioContext) {
+        const success = initAudio();
         if (!success) {
             return 500;
         }
@@ -159,7 +166,7 @@ async function playTone(frequency, duration = 0.5) {
 /**
  * Handle cell click - play tone and show visual feedback
  */
-async function handleCellClick(event) {
+function handleCellClick(event) {
     const cell = event.target;
     const frequency = parseFloat(cell.dataset.frequency);
     
@@ -169,7 +176,7 @@ async function handleCellClick(event) {
     cell.classList.add('playing');
     
     // Play the tone
-    const durationMs = await playTone(frequency);
+    const durationMs = playTone(frequency);
     
     setTimeout(() => {
         cell.classList.remove('playing');
