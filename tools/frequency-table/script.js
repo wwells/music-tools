@@ -178,41 +178,22 @@ function setupAudioPrompt() {
 }
 
 /**
- * Play a tone at the given frequency
+ * Play a tone at the given frequency using HTML5 Audio (works on iOS)
  */
 function playTone(frequency, duration = 0.5) {
-    // Initialize audio if needed (will work on desktop click, mobile needs button first)
-    if (!audioEnabled || !audioContext) {
-        const success = initAudio();
-        if (!success) {
-            return 500;
-        }
+    // On desktop (non-touch), enable audio on first play
+    if (!audioEnabled && !isTouchDevice()) {
+        audioEnabled = true;
+    }
+    
+    if (!audioEnabled) {
+        return 500;
     }
     
     try {
-        // Create oscillator
-        const oscillator = audioContext.createOscillator();
-        oscillator.type = 'sine';
-        oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-        
-        // Create gain node for envelope
-        const gainNode = audioContext.createGain();
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        
-        // Fade out to avoid clicks
-        const fadeStart = audioContext.currentTime + duration * 0.7;
-        const fadeEnd = audioContext.currentTime + duration;
-        gainNode.gain.setValueAtTime(0.3, fadeStart);
-        gainNode.gain.exponentialRampToValueAtTime(0.001, fadeEnd);
-        
-        // Connect nodes
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        // Start and stop
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(fadeEnd);
-        
+        const audio = new Audio(generateToneDataURI(frequency, duration));
+        audio.volume = 0.5;
+        audio.play().catch(e => console.warn('Could not play tone:', e));
         return duration * 1000;
     } catch (e) {
         console.warn('Could not play tone:', e);
