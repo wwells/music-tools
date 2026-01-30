@@ -178,14 +178,15 @@ function setupAudioPrompt() {
 }
 
 /**
- * Play a tone at the given frequency using HTML5 Audio (works on iOS)
+ * Play a tone at the given frequency
  */
 function playTone(frequency, duration = 0.5) {
-    // On desktop (non-touch), enable audio on first play
-    if (!audioEnabled && !isTouchDevice()) {
-        audioEnabled = true;
+    // On desktop, use Web Audio API oscillator
+    if (!isTouchDevice()) {
+        return playToneOscillator(frequency, duration);
     }
     
+    // On mobile/touch, use HTML5 Audio with generated WAV
     if (!audioEnabled) {
         return 500;
     }
@@ -194,6 +195,44 @@ function playTone(frequency, duration = 0.5) {
         const audio = new Audio(generateToneDataURI(frequency, duration));
         audio.volume = 0.5;
         audio.play().catch(e => console.warn('Could not play tone:', e));
+        return duration * 1000;
+    } catch (e) {
+        console.warn('Could not play tone:', e);
+        return 500;
+    }
+}
+
+/**
+ * Play tone using Web Audio API oscillator (desktop)
+ */
+function playToneOscillator(frequency, duration = 0.5) {
+    try {
+        // Create context on first use
+        if (!audioContext) {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            audioContext = new AudioContextClass();
+        }
+        
+        if (audioContext.state === 'suspended') {
+            audioContext.resume();
+        }
+        
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime + duration * 0.7);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + duration);
+        
         return duration * 1000;
     } catch (e) {
         console.warn('Could not play tone:', e);
