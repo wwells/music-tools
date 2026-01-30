@@ -49,43 +49,61 @@ function formatFrequency(freq) {
 }
 
 /**
+ * Update status display for debugging
+ */
+function updateStatus(message) {
+    const status = document.getElementById('audio-status');
+    if (status) {
+        status.textContent = message;
+    }
+}
+
+/**
  * Initialize and unlock the audio context
  * Must be called synchronously from a user gesture on iOS
  */
 function initAudio() {
-    if (audioEnabled && audioContext) return true;
+    if (audioEnabled && audioContext && audioContext.state === 'running') {
+        return true;
+    }
     
     try {
         // Create audio context - must happen synchronously in gesture
         if (!audioContext) {
             const AudioContextClass = window.AudioContext || window.webkitAudioContext;
             audioContext = new AudioContextClass();
+            updateStatus('Context created: ' + audioContext.state);
         }
         
-        // Resume returns a promise but we also need to start audio synchronously
-        if (audioContext.state === 'suspended') {
-            audioContext.resume();
-        }
+        // Resume and play tone
+        audioContext.resume().then(() => {
+            updateStatus('Resumed: ' + audioContext.state);
+            
+            // Play a tone after resume completes
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            gain.gain.value = 0.3;
+            osc.frequency.value = 440;
+            osc.start();
+            osc.stop(audioContext.currentTime + 0.3);
+            
+            audioEnabled = true;
+            updateStatus('Playing tone... State: ' + audioContext.state);
+            
+            // Hide prompt after short delay
+            setTimeout(() => {
+                const prompt = document.getElementById('audio-prompt');
+                if (prompt) prompt.hidden = true;
+            }, 500);
+        }).catch(e => {
+            updateStatus('Resume failed: ' + e.message);
+        });
         
-        // iOS requires actually producing sound to unlock - play a real tone
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        // Very short, quiet tone
-        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.1);
-        
-        oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.1);
-        
-        audioEnabled = true;
         return true;
     } catch (e) {
-        console.warn('Could not initialize audio:', e);
+        updateStatus('Error: ' + e.message);
         return false;
     }
 }
@@ -93,29 +111,24 @@ function initAudio() {
 /**
  * Handle enable audio button click
  */
-function handleEnableAudio() {
-    // Must be synchronous for iOS
-    const success = initAudio();
-    if (success) {
-        // Hide the prompt
-        const prompt = document.getElementById('audio-prompt');
-        if (prompt) {
-            prompt.hidden = true;
-        }
-    }
+function handleEnableAudio(event) {
+    event.preventDefault();
+    updateStatus('Button tapped...');
+    initAudio();
 }
 
 /**
  * Show audio prompt on touch devices
  */
 function setupAudioPrompt() {
-    if (isTouchDevice()) {
-        const prompt = document.getElementById('audio-prompt');
-        const btn = document.getElementById('enable-audio-btn');
-        if (prompt && btn) {
-            prompt.hidden = false;
-            btn.addEventListener('click', handleEnableAudio);
-        }
+    const prompt = document.getElementById('audio-prompt');
+    const btn = document.getElementById('enable-audio-btn');
+    
+    if (isTouchDevice() && prompt && btn) {
+        prompt.hidden = false;
+        // Use both click and touchend for maximum compatibility
+        btn.addEventListener('click', handleEnableAudio);
+        btn.addEventListener('touchend', handleEnableAudio);
     }
     // On desktop, audio will be initialized on first click (no prompt needed)
 }
