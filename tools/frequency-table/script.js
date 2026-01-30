@@ -49,16 +49,6 @@ function formatFrequency(freq) {
 }
 
 /**
- * Update status display for debugging
- */
-function updateStatus(message) {
-    const status = document.getElementById('audio-status');
-    if (status) {
-        status.textContent = message;
-    }
-}
-
-/**
  * Generate a WAV file data URI for a sine wave tone
  */
 function generateToneDataURI(frequency, duration, sampleRate = 44100) {
@@ -108,13 +98,11 @@ function generateToneDataURI(frequency, duration, sampleRate = 44100) {
  * Initialize and unlock audio using HTML5 Audio element (works on iOS)
  */
 function initAudio() {
-    if (audioEnabled && audioContext && audioContext.state === 'running') {
+    if (audioEnabled) {
         return true;
     }
     
     try {
-        updateStatus('Creating audio...');
-        
         // Create and play audio element - this works on iOS
         const audio = new Audio(generateToneDataURI(440, 0.3));
         audio.volume = 0.5;
@@ -123,31 +111,21 @@ function initAudio() {
         
         if (playPromise !== undefined) {
             playPromise.then(() => {
-                updateStatus('Audio playing via HTML5 Audio');
+                audioEnabled = true;
                 
-                // Now create Web Audio context for future use
-                if (!audioContext) {
-                    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-                    audioContext = new AudioContextClass();
-                }
-                
-                audioContext.resume().then(() => {
-                    audioEnabled = true;
-                    updateStatus('Audio enabled! Context: ' + audioContext.state);
-                    
-                    setTimeout(() => {
-                        const prompt = document.getElementById('audio-prompt');
-                        if (prompt) prompt.hidden = true;
-                    }, 400);
-                });
+                // Hide the prompt after the unlock tone plays
+                setTimeout(() => {
+                    const prompt = document.getElementById('audio-prompt');
+                    if (prompt) prompt.hidden = true;
+                }, 400);
             }).catch(e => {
-                updateStatus('Play failed: ' + e.message);
+                console.warn('Audio unlock failed:', e);
             });
         }
         
         return true;
     } catch (e) {
-        updateStatus('Error: ' + e.message);
+        console.warn('Audio init error:', e);
         return false;
     }
 }
@@ -157,7 +135,6 @@ function initAudio() {
  */
 function handleEnableAudio(event) {
     event.preventDefault();
-    updateStatus('Button tapped...');
     initAudio();
 }
 
