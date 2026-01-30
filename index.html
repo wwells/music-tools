@@ -9,48 +9,37 @@
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-    <header class="container">
-        <nav>
-            <ul>
-                <li><strong>Music Tools</strong></li>
-            </ul>
-        </nav>
-    </header>
-
     <main class="container">
         <hgroup>
-            <h1>Music Tools</h1>
+            <h1>🎛️ Music Tools</h1>
             <p>Interactive tools for musicians, producers, and music theory enthusiasts.</p>
         </hgroup>
 
         <section>
             <h2>Available Tools</h2>
             <div class="grid">
-                <article>
-                    <header>
-                        <h3>Note Frequency Table</h3>
-                    </header>
-                    <p>Interactive reference table for musical note frequencies in Hertz (Hz). Click any frequency to hear the tone.</p>
-                    <footer>
-                        <a href="tools/frequency-table/" role="button">Open Tool</a>
-                    </footer>
+                <article class="tool-card-compact">
+                    <h3><span class="tool-icon">🌊</span> Note Frequency Table</h3>
+                    <div class="tool-row">
+                        <p>Interactive reference for musical note frequencies. Click to hear tones.</p>
+                        <a href="tools/frequency-table/" role="button">Open</a>
+                    </div>
                 </article>
 
-                <article>
-                    <header>
-                        <h3>Delay & Reverb Calculator</h3>
-                    </header>
-                    <p>Calculate delay times and reverb settings synchronized to your song's tempo (BPM).</p>
-                    <footer>
-                        <a href="tools/delay-reverb/" role="button">Open Tool</a>
-                    </footer>
+                <article class="tool-card-compact">
+                    <h3><span class="tool-icon">⏱️</span> Delay & Reverb Calculator</h3>
+                    <div class="tool-row">
+                        <p>Calculate delay times and reverb settings synced to your tempo.</p>
+                        <a href="tools/delay-reverb/" role="button">Open</a>
+                    </div>
                 </article>
             </div>
         </section>
     </main>
 
     <footer class="container">
-        <small>Built with vanilla HTML, CSS, and JavaScript.</small>
+        <p></p>
+        <small>🎵 Just HTML, CSS, and JavaScript. <a href="https://github.com/waltwells/music-tools">Source</a>🎵</small>
     </footer>
 </body>
 </html>
