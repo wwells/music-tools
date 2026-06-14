@@ -1,0 +1,73 @@
+/* Initial Compressor Settings Styles */
+
+.bpm-input-section {
+    max-width: 300px;
+    margin-bottom: 2rem;
+}
+
+.bpm-input-section input {
+    font-size: 1.5rem;
+    text-align: center;
+    font-weight: bold;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+#compressor-table {
+    white-space: nowrap;
+}
+
+#compressor-table th,
+#compressor-table td {
+    text-align: center;
+    min-width: 120px;
+}
+
+#compressor-table th:first-child,
+#compressor-table td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    text-align: left;
+    font-weight: bold;
+    min-width: 140px;
+    background: var(--pico-background-color, #fff);
+}
+
+@media (prefers-color-scheme: dark) {
+    #compressor-table th:first-child,
+    #compressor-table td:first-child {
+        background: var(--pico-background-color, #13171f);
+    }
+}
+
+.time-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.note-label {
+    font-size: 0.85em;
+    opacity: 0.7;
+}
+
+.ms-value {
+    font-weight: 600;
+}
+
+section {
+    margin-bottom: 2rem;
+}
+
+section h2 {
+    margin-bottom: 0.5rem;
+}
+
+section > p {
+    margin-bottom: 1rem;
+}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compressor By the Numbers Settings - Music Tools</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="container">
+        <nav>
+            <ul>
+                <li><a href="../../"><strong>Music Tools</strong></a></li>
+            </ul>
+            <ul>
+                <li><a href="../../">Home</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <hgroup>
+            <h1>Initial Compressor Settings</h1>
+            <p>Recommended starting points for compressor ratio, attack, and release by mix element.</p>
+        </hgroup>
+
+        <div class="bpm-input-section">
+            <label for="bpm-input">
+                <strong>BPM (Beats Per Minute)</strong>
+            </label>
+            <input
+                type="number"
+                id="bpm-input"
+                name="bpm"
+                min="20"
+                max="300"
+                value="120"
+                aria-describedby="bpm-helper"
+            >
+        </div>
+
+        <section>
+            <h2>Mix Element Settings</h2>
+            <p><small>
+                These are starting points, not rules. 
+                Attack and release are calculated from note values at your tempo — 
+                try other denominations as you dial things in. Higher ratios and shorter 
+                attacks add aggression; longer releases add more sustain and punch.  
+                Not relevant for optical compression.</small></p>
+
+            <figure>
+                <div class="table-wrapper">
+                    <table id="compressor-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Mix Element</th>
+                                <th scope="col">Ratio</th>
+                                <th scope="col">Attack</th>
+                                <th scope="col">Release</th>
+                            </tr>
+                        </thead>
+                        <tbody id="compressor-tbody">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </figure>
+        </section>
+    </main>
+
+    <footer class="container">
+        <small><a href="../../">Back to Music Tools</a></small>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
