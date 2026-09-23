@@ -24,8 +24,93 @@
     <main class="container">
         <hgroup>
             <h1>Initial Compressor Settings</h1>
-            <p>Recommended starting points for compressor ratio, attack, and release by mix element.</p>
+            <p>Recommended starting points for compressor attack and release by mix element.</p>
         </hgroup>
+
+        <section id="compression-styles">
+            <h2>The 4 Styles of Compression</h2>
+            <p><small>
+                Threshold, attack, and release don't just control loudness — together they
+                create a character. These are the four combinations worth dialing in on purpose.
+                Concept adapted from <a href="https://mastering.com/courses/compression/" target="_blank" rel="noopener">Mastering.com's compression course</a>.
+            </small></p>
+
+            <div class="styles-group">
+                <p class="styles-group-label">High Threshold &middot; Fast Attack</p>
+                <div class="styles-grid">
+                    <article class="style-card style-consistent">
+                        <h3>Consistent</h3>
+                        <ul class="style-settings">
+                            <li><span>Threshold</span><strong>High</strong></li>
+                            <li><span>Attack</span><strong>Fast</strong></li>
+                            <li><span>Release</span><strong>Slow</strong></li>
+                        </ul>
+                        <p>Evens out performance dynamics without being heard. The go-to for vocals,
+                            mix bus glue, and anything that needs to sit steady in the mix.</p>
+                        <button class="style-select-btn" data-style="consistent">Use in calculator ↓</button>
+                    </article>
+                    <article class="style-card style-thick">
+                        <h3>Thick <sup title="Use a peak meter to set makeup gain">*</sup></h3>
+                        <ul class="style-settings">
+                            <li><span>Threshold</span><strong>High</strong></li>
+                            <li><span>Attack</span><strong>Fast</strong></li>
+                            <li><span>Release</span><strong>Fast</strong></li>
+                        </ul>
+                        <p>Fast attack catches every peak while a quicker release keeps pumping in time,
+                            adding density and pushing perceived depth farther back in the mix.</p>
+                        <ul class="style-tips">
+                            <li>Create headroom before compressing</li>
+                            <li>Depth: farther</li>
+                        </ul>
+                        <button class="style-select-btn" data-style="thick">Use in calculator ↓</button>
+                    </article>
+                </div>
+            </div>
+
+            <div class="styles-group">
+                <p class="styles-group-label">Low Threshold &middot; Slow Attack</p>
+                <div class="styles-grid">
+                    <article class="style-card style-punchy">
+                        <h3>Punchy</h3>
+                        <ul class="style-settings">
+                            <li><span>Threshold</span><strong>Low</strong></li>
+                            <li><span>Attack</span><strong>Slow</strong></li>
+                            <li><span>Release</span><strong>Slow</strong></li>
+                        </ul>
+                        <p>The slow attack lets the transient through untouched, then the low threshold
+                            clamps down hard on the sustain — exaggerating the hit.</p>
+                        <ul class="style-tips">
+                            <li>Turn down room sound</li>
+                            <li>Depth: closer</li>
+                        </ul>
+                        <button class="style-select-btn" data-style="punchy">Use in calculator ↓</button>
+                    </article>
+                    <article class="style-card style-groove">
+                        <h3>Groove <sup title="Use a peak meter to set makeup gain">*</sup></h3>
+                        <ul class="style-settings">
+                            <li><span>Threshold</span><strong>Low</strong></li>
+                            <li><span>Attack</span><strong>Slow</strong></li>
+                            <li><span>Release</span><strong>Fast</strong></li>
+                        </ul>
+                        <p>Same transient-preserving slow attack, but a faster release lets the
+                            compressor breathe with the tempo, locking into the pocket.</p>
+                        <button class="style-select-btn" data-style="groove">Use in calculator ↓</button>
+                    </article>
+                </div>
+            </div>
+
+            <p class="styles-footnote"><small>* Use a peak meter (instead of a loudness meter) when setting makeup gain.</small></p>
+
+            <details>
+                <summary>What happens with other combinations?</summary>
+                <p><small>
+                    Low threshold + fast attack squashes transients into a shapeless
+                    <strong>splat</strong> (slow release) or a harsh <strong>brickwall</strong> (fast release).
+                    High threshold + slow attack usually means peaks slip by before the compressor can react —
+                    effectively doing <strong>nothing</strong>.
+                </small></p>
+            </details>
+        </section>
 
         <div class="bpm-input-section">
             <label for="bpm-input">
@@ -42,14 +127,21 @@
             >
         </div>
 
-        <section>
+        <section id="mix-element-settings">
             <h2>Mix Element Settings</h2>
             <p><small>
-                These are starting points, not rules. 
-                Attack and release are calculated from note values at your tempo — 
-                try other denominations as you dial things in. Higher ratios and shorter 
-                attacks add aggression; longer releases add more sustain and punch.  
-                Not relevant for optical compression.</small></p>
+                These are starting points, not rules. Attack is a rough estimate of how fast each
+                element's transient actually is; release is calculated from note values at your tempo —
+                try other denominations as you dial things in. Not relevant for optical compression.
+            </small></p>
+
+            <div class="style-selector" role="group" aria-label="Compression style">
+                <button type="button" class="style-btn active" data-style="consistent">Consistent</button>
+                <button type="button" class="style-btn" data-style="thick">Thick</button>
+                <button type="button" class="style-btn" data-style="punchy">Punchy</button>
+                <button type="button" class="style-btn" data-style="groove">Groove</button>
+            </div>
+            <p id="style-description" class="style-description"></p>
 
             <figure>
                 <div class="table-wrapper">
@@ -57,7 +149,6 @@
                         <thead>
                             <tr>
                                 <th scope="col">Mix Element</th>
-                                <th scope="col">Ratio</th>
                                 <th scope="col">Attack</th>
                                 <th scope="col">Release</th>
                             </tr>

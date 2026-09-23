@@ -1,5 +1,167 @@
 /* Initial Compressor Settings Styles */
 
+/* Styles of Compression */
+#compression-styles {
+    margin-bottom: 2.5rem;
+}
+
+.styles-group {
+    margin-bottom: 1rem;
+}
+
+.styles-group-label {
+    margin: 0 0 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    opacity: 0.6;
+}
+
+.styles-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.style-card {
+    margin: 0;
+    padding: 1.25rem;
+    border-left: 5px solid var(--style-accent, var(--pico-primary));
+    background: color-mix(in srgb, var(--style-accent, var(--pico-primary)) 10%, var(--pico-card-background-color));
+}
+
+.style-card h3 {
+    margin-bottom: 0.75rem;
+}
+
+.style-card h3 sup {
+    font-size: 0.7em;
+    cursor: help;
+}
+
+.style-card p {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+}
+
+.style-card p + .style-tips {
+    margin-top: 0.75rem;
+}
+
+.style-select-btn {
+    display: inline-block;
+    width: auto;
+    margin: 0.75rem 0 0;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+    background: transparent;
+    border: 1px solid color-mix(in srgb, var(--style-accent, var(--pico-primary)) 60%, transparent);
+    color: var(--style-accent, var(--pico-primary));
+}
+
+.style-select-btn:hover {
+    background: color-mix(in srgb, var(--style-accent, var(--pico-primary)) 15%, transparent);
+}
+
+.style-settings {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0;
+    margin: 0 0 0.75rem;
+}
+
+.style-settings li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: var(--pico-border-radius);
+    background: color-mix(in srgb, var(--style-accent, var(--pico-primary)) 18%, transparent);
+    font-size: 0.8rem;
+}
+
+.style-settings li span {
+    opacity: 0.65;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.02em;
+}
+
+.style-settings li strong {
+    font-size: 0.9rem;
+}
+
+.style-tips {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.style-tips li {
+    padding-left: 1rem;
+    position: relative;
+}
+
+.style-tips li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+}
+
+.style-consistent { --style-accent: #6a9955; }
+.style-thick { --style-accent: #4e8f6c; }
+.style-punchy { --style-accent: #5a8f3e; }
+.style-groove { --style-accent: #3e8f7c; }
+
+.styles-footnote {
+    margin: 0.5rem 0 0;
+    opacity: 0.7;
+}
+
+#compression-styles details {
+    margin-top: 1rem;
+}
+
+@media (max-width: 640px) {
+    .styles-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.style-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem 0 0.5rem;
+}
+
+.style-btn {
+    width: auto;
+    margin: 0;
+    padding: 0.5rem 1rem;
+    background: transparent;
+    color: var(--pico-color);
+    border: 1px solid var(--pico-muted-border-color);
+}
+
+.style-btn.active {
+    background: var(--pico-primary);
+    border-color: var(--pico-primary);
+    color: var(--pico-primary-inverse);
+}
+
+.style-description {
+    min-height: 2.4em;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
 .bpm-input-section {
     max-width: 300px;
     margin-bottom: 2rem;
