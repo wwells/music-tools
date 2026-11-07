@@ -20,14 +20,17 @@
 
 /* Shared table styles */
 #reverb-table,
-#delay-table {
+#delay-table,
+#haas-table {
     white-space: nowrap;
 }
 
 #reverb-table th,
 #reverb-table td,
 #delay-table th,
-#delay-table td {
+#delay-table td,
+#haas-table th,
+#haas-table td {
     text-align: center;
     min-width: 120px;
 }
@@ -36,7 +39,9 @@
 #reverb-table th:first-child,
 #reverb-table td:first-child,
 #delay-table th:first-child,
-#delay-table td:first-child {
+#delay-table td:first-child,
+#haas-table th:first-child,
+#haas-table td:first-child {
     position: sticky;
     left: 0;
     z-index: 1;
@@ -51,7 +56,9 @@
     #reverb-table th:first-child,
     #reverb-table td:first-child,
     #delay-table th:first-child,
-    #delay-table td:first-child {
+    #delay-table td:first-child,
+    #haas-table th:first-child,
+    #haas-table td:first-child {
         background: var(--pico-background-color, #13171f);
     }
 }

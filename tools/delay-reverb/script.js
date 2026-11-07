@@ -23,10 +23,21 @@ const REVERB_ROOMS = [
     { name: 'Tight Ambience (1/4 Note)', totalMultiplier: 1, preDelayMultiplier: 0.0078125 } // 1/4 note, 1/512 pre-delay
 ];
 
+// Haas panning delay times (fixed, not tempo-dependent).
+// Delay is applied to the channel opposite the pan direction.
+const HAAS_PAN_DELAYS = [
+    { pan: '0% Pan (Center)', delayMs: 0.0 },
+    { pan: '25% Pan', delayMs: 0.2 },
+    { pan: '50% Pan', delayMs: 0.4 },
+    { pan: '75% Pan', delayMs: 0.5 },
+    { pan: '100% Pan (Hard L/R)', delayMs: 0.6 }
+];
+
 // DOM Elements
 const bpmInput = document.getElementById('bpm-input');
 const reverbTbody = document.getElementById('reverb-tbody');
 const delayTbody = document.getElementById('delay-tbody');
+const haasTbody = document.getElementById('haas-tbody');
 
 /**
  * Calculate quarter note duration in milliseconds
@@ -124,6 +135,18 @@ function renderDelayTable(bpm) {
 }
 
 /**
+ * Render the Haas panning delay table (static, independent of BPM)
+ */
+function renderHaasTable() {
+    const rows = HAAS_PAN_DELAYS.map(item => `<tr>
+            <td>${item.pan}</td>
+            <td><span class="ms-value">${item.delayMs.toFixed(1)} ms</span></td>
+        </tr>`);
+
+    haasTbody.innerHTML = rows.join('');
+}
+
+/**
  * Update all tables based on current BPM
  */
 function updateTables() {
@@ -155,4 +178,5 @@ bpmInput.addEventListener('blur', () => {
 });
 
 // Initial render
+renderHaasTable();
 updateTables();
